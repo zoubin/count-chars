@@ -1,0 +1,4 @@
+Don't repeat yourself.
+笑相遇，似觉琼枝玉树相倚，暖日明霞光烂。
+Do one thing and do it well.
+在Node stream暴露的接口中，Readable和Writable分别需要实现_read和_write方法。

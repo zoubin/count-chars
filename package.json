@@ -1,0 +1,36 @@
+{
+  "name": "word-filter",
+  "version": "0.0.1",
+  "description": "Count the number of characters in a text stream",
+  "main": "index.js",
+  "bin": {
+    "wf": "bin/cmd.js"
+  },
+  "scripts": {
+    "test": "npm run lint && tap test/*.js",
+    "lint": "eslint *.js 'lib/**/*.js' test/*.js bin/*.js",
+    "coveralls": "COVERALLS_REPO_TOKEN=REPO_TOKEN npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zoubin/word-filter.git"
+  },
+  "keywords": [
+    "count",
+    "cjk",
+    "character"
+  ],
+  "author": "zoubin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zoubin/word-filter/issues"
+  },
+  "homepage": "https://github.com/zoubin/word-filter#readme",
+  "devDependencies": {
+    "eslint": "^1.10.1",
+    "tap": "^5.0.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
+}
