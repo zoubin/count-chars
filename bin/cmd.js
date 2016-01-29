@@ -19,7 +19,7 @@ program
 function createFilter(charset) {
   charset = charset.toLowerCase()
   if (['cjk', 'ascii', 'unicode'].indexOf(charset) === -1) {
-    const pat = new RegExp(regexp)
+    const pat = new RegExp(charset)
     return new WordFilter(c => pat.test(c))
   }
   return WordFilter[charset]()
@@ -62,7 +62,8 @@ createSource(program.args[0])
       if (program.count) {
         console.log(this.count)
       }
-    }
+      next()
+    },
   }))
   .pipe(createDest(program.print && !program.count))
 
