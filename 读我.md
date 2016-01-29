@@ -10,6 +10,9 @@ npm i -g word-filter
 
 wf -h
 
+wf -n example/text
+cat example/text | wf -n
+
 ```
 
 ## API
