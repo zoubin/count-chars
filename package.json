@@ -1,6 +1,6 @@
 {
   "name": "word-filter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Count the number of characters in a text stream",
   "main": "index.js",
   "bin": {
