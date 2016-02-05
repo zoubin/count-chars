@@ -4,6 +4,8 @@
 
 Extract words from the input stream into another text stream.
 
+[中文介绍](读我.md)
+
 ## Command line
 ```bash
 npm i -g word-filter

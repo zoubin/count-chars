@@ -10,11 +10,35 @@ const fs = require('fs')
 const program = new Command('chc')
 program
   .version(require('../package').version)
-  .option('-c, --charset <pattern>', 'Filter words according to word_pattern. You can also specify a chaset: cjk, ascii (default)', 'ascii')
+  .option('-c, --charset <pattern>', 'Filter words according to word_pattern.', 'ascii')
+  .option('--cjk', 'Filter CJK words.')
   .option('-n, --count', 'Show the number of words filtered.')
   .option('-P, --no-print', 'Prevent from printing the filter text.')
   .option('-d, --delimiter <str>', 'Delimiter for words when printed', ' ')
   .parse(process.argv)
+
+createSource(program.args[0])
+  .pipe(createFilter(program.cjk ? 'cjk' : program.charset))
+  .pipe(Transform({
+    objectMode: true,
+    transform: function (word, enc, next) {
+      this.count = this.count || 0
+      ++this.count
+      if (!this._delimiter) {
+        this._delimiter = makeDelimiter(program.delimiter)
+      } else {
+        this.push(this._delimiter)
+      }
+      next(null, word)
+    },
+    flush: function (next) {
+      if (program.count) {
+        console.log(this.count)
+      }
+      next()
+    },
+  }))
+  .pipe(createDest(program.print && !program.count))
 
 function createFilter(charset) {
   charset = charset.toLowerCase()
@@ -43,27 +67,4 @@ function createSource(file) {
 function makeDelimiter(s) {
   return JSON.parse('"' + s.replace(/"/g, '\\"') + '"')
 }
-
-createSource(program.args[0])
-  .pipe(createFilter(program.charset))
-  .pipe(Transform({
-    objectMode: true,
-    transform: function (word, enc, next) {
-      this.count = this.count || 0
-      ++this.count
-      if (!this._delimiter) {
-        this._delimiter = makeDelimiter(program.delimiter)
-      } else {
-        this.push(this._delimiter)
-      }
-      next(null, word)
-    },
-    flush: function (next) {
-      if (program.count) {
-        console.log(this.count)
-      }
-      next()
-    },
-  }))
-  .pipe(createDest(program.print && !program.count))
 
