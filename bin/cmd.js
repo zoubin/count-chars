@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-const Stream = require('stream')
-const Transform = Stream.Transform
-const PassThrough = Stream.PassThrough
+const stream = require('stream')
 const Command = require('commander').Command
 const WordFilter = require('..')
 const fs = require('fs')
@@ -19,23 +17,20 @@ program
 
 createSource(program.args[0])
   .pipe(createFilter(program.cjk ? 'cjk' : program.charset))
-  .pipe(Transform({
+  .pipe(stream.Transform({
     objectMode: true,
     transform: function (word, enc, next) {
-      this.count = this.count || 0
-      ++this.count
+      if (program.count) {
+        this.count = this.count || 0
+        ++this.count
+        process.stdout.write('\r\x1b[K' + this.count)
+      }
       if (!this._delimiter) {
         this._delimiter = makeDelimiter(program.delimiter)
       } else {
         this.push(this._delimiter)
       }
       next(null, word)
-    },
-    flush: function (next) {
-      if (program.count) {
-        console.log(this.count)
-      }
-      next()
     },
   }))
   .pipe(createDest(program.print && !program.count))
@@ -50,7 +45,14 @@ function createFilter(charset) {
 }
 
 function createDest(print) {
-  return print ? process.stdout : PassThrough()
+  if (print) {
+    return process.stdout
+  }
+  return stream.Writable({
+    write: function (buf, enc, next) {
+      next()
+    },
+  })
 }
 
 function createSource(file) {
